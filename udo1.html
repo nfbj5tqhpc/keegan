@@ -6,11 +6,11 @@
     <title>Удостоверение личности</title>
     <style>
         :root {
-            --bank-blue-text: #5a88d8; 
-            --bank-blue-border: #2c5bc3; 
+            --bank-blue-text: #5a88d8; /* Цвет текста в кнопке */
+            --bank-blue-border: #2c5bc3; /* Более яркий цвет рамки */
             --text-black: #000000;
             --text-gray: #8e8e93;
-            --bg-tab: #f2f2f4;
+            --bg-tab: #e9e9eb;
         }
 
         body {
@@ -24,7 +24,7 @@
         .mobile-container {
             width: 100%;
             max-width: 400px;
-            height: 100vh; /* Занимает всю высоту экрана */
+            height: 100vh;
             display: flex;
             flex-direction: column;
             background: white;
@@ -49,56 +49,51 @@
             font-size: 24px;
         }
 
-        /* Вкладки */
+        /* Переключатель вкладок */
         .tabs {
             display: flex;
             background: var(--bg-tab);
             margin: 10px 15px;
-            border-radius: 12px;
-            padding: 3px;
+            border-radius: 10px;
+            padding: 2px;
         }
 
         .tab {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 15px;
             font-weight: 600;
             background: transparent;
-            color: var(--text-black);
-            transition: 0.2s;
+            color: var(--text-black); /* Черный текст вкладок */
         }
 
         .tab.active {
             background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         /* Контент реквизитов */
         .content-section {
-            display: none; /* По умолчанию скрыто */
+            display: flex;
             flex-direction: column;
             padding: 10px 20px;
-            flex: 1; /* Позволяет секции расти */
-        }
-
-        .content-section.active {
-            display: flex;
+            flex: 1;
         }
 
         .input-group {
-            margin-top: 18px;
+            margin-top: 15px;
             border-bottom: 1px solid #f0f0f2;
-            padding-bottom: 8px;
+            padding-bottom: 5px;
         }
 
         .input-group label {
             color: var(--text-gray);
             font-size: 13px;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .input-row {
@@ -112,21 +107,23 @@
             outline: none;
             font-size: 17px;
             width: 100%;
-            padding: 2px 0;
-            color: #000;
-            background: transparent;
+            padding: 5px 0;
+            color: #333;
         }
 
+        /* Иконка копирования (черная и развернутая) */
         .copy-icon {
             cursor: pointer;
-            padding-left: 10px;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Подвал с кнопкой в самом низу */
+        /* Кнопка внизу */
         .footer {
             padding: 20px;
-            margin-top: auto; /* ЭТОТ ПУНКТ ТОЛКАЕТ КНОПКУ ВНИЗ */
-            margin-bottom: 10px;
         }
 
         .btn-send {
@@ -136,8 +133,8 @@
             gap: 10px;
             width: 100%;
             background: transparent;
-            border: 1.5px solid var(--bank-blue-border);
-            color: var(--bank-blue-border); 
+            border: 2px solid var(--bank-blue-border); /* Яркая рамка */
+            color: var(--bank-blue-text); /* Текст бледнее */
             padding: 14px;
             border-radius: 12px;
             font-size: 16px;
@@ -160,23 +157,19 @@
     </div>
 
     <div class="tabs">
-        <button class="tab" onclick="toggleTab('doc')">Документ</button>
-        <button class="tab active" onclick="toggleTab('req')">Реквизиты</button>
+        <button class="tab">Документ</button>
+        <button class="tab active">Реквизиты</button>
     </div>
 
-    <div id="tab-doc" class="content-section">
-        <p style="text-align: center; color: gray; margin-top: 50px;">Здесь будет ваш документ</p>
-    </div>
-
-    <div id="tab-req" class="content-section active">
+    <div class="content-section">
         <div class="input-group">
             <label>ФИО</label>
             <div class="input-row">
                 <input type="text" placeholder="">
                 <div class="copy-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        <rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect>
+                        <rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect>
                     </svg>
                 </div>
             </div>
@@ -186,7 +179,12 @@
             <label>ИИН</label>
             <div class="input-row">
                 <input type="text" placeholder="">
-                <div class="copy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg></div>
+                <div class="copy-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        <rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect>
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -194,7 +192,12 @@
             <label>Дата рождения</label>
             <div class="input-row">
                 <input type="text" placeholder="">
-                <div class="copy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg></div>
+                <div class="copy-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        <rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect>
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -202,7 +205,12 @@
             <label>Номер документа</label>
             <div class="input-row">
                 <input type="text" placeholder="">
-                <div class="copy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg></div>
+                <div class="copy-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        <rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect>
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -210,7 +218,12 @@
             <label>Дата выдачи</label>
             <div class="input-row">
                 <input type="text" placeholder="">
-                <div class="copy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg></div>
+                <div class="copy-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        <rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect>
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -218,40 +231,27 @@
             <label>Срок действия</label>
             <div class="input-row">
                 <input type="text" placeholder="">
-                <div class="copy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg></div>
+                <div class="copy-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        <rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect>
+                    </svg>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="footer">
-            <button class="btn-send">
-                <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                    <polyline points="16 6 12 2 8 6"></polyline>
-                    <line x1="12" y1="2" x2="12" y2="15"></line>
-                </svg>
-                Отправить реквизиты
-            </button>
-        </div>
+    <div class="footer">
+        <button class="btn-send">
+            <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+            Отправить реквизиты
+        </button>
     </div>
 </div>
-
-<script>
-    function toggleTab(type) {
-        const tabs = document.querySelectorAll('.tab');
-        const sections = document.querySelectorAll('.content-section');
-        
-        tabs.forEach(t => t.classList.remove('active'));
-        sections.forEach(s => s.classList.remove('active'));
-
-        if(type === 'doc') {
-            tabs[0].classList.add('active');
-            document.getElementById('tab-doc').classList.add('active');
-        } else {
-            tabs[1].classList.add('active');
-            document.getElementById('tab-req').classList.add('active');
-        }
-    }
-</script>
 
 </body>
 </html>
