@@ -1,90 +1,360 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Цифровые документы</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <title>Удостоверение личности - Банк</title>
+    <style>
+        :root {
+            --bank-blue: #2c5bc3;
+            --bg-gray: #f8f9fa;
+            --text-gray: #8e8e93;
+            --border-color: #e5e5ea;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: white;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mobile-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+        }
+
+        /* Шапка */
+        .header {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 24px;
+        }
+
+        /* Переключатель вкладок */
+        .tabs {
+            display: flex;
+            background: #e9e9eb;
+            margin: 0 20px;
+            border-radius: 10px;
+            padding: 2px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            background: transparent;
+            transition: 0.3s;
+        }
+
+        .tab.active {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Контент */
+        .content-section {
+            display: none;
+            flex: 1;
+            padding: 20px;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .content-section.active {
+            display: flex;
+        }
+
+        /* Стили вкладки Документ */
+        .upload-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-upload {
+            background: var(--bank-blue);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Стили вкладки Реквизиты */
+        .input-group {
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .input-row input {
+            width: 85%;
+            border: none;
+            padding: 8px 0;
+            font-size: 17px;
+            outline: none;
+            font-weight: 400;
+            color: #333;
+        }
+
+        /* Иконка копирования (SVG) */
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            opacity: 0.5;
+        }
+
+        .copy-btn:active {
+            opacity: 1;
+            transform: scale(0.9);
+        }
+
+        /* Кнопки внизу */
+        .footer-buttons {
+            padding: 20px;
+            gap: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .btn-primary {
+            background: var(--bank-blue);
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--bank-blue);
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--bank-blue);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Модальное окно QR-кода */
+        #qr-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            z-index: 100;
+            text-align: center;
+        }
+        
+        .qr-box {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+        }
+
+        .qr-placeholder {
+            width: 220px;
+            height: 220px;
+            border: 2px solid #333;
+            background-image: repeating-linear-gradient(45deg, #eee 0, #eee 10px, #fff 10px, #fff 20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="phone">
+<div class="mobile-container">
+    <div class="header">
+        <a href="#" class="back-btn">‹</a>
+        Удостоверение личности
+    </div>
 
-    <header>
-        <span class="back">‹</span>
-        <h1>Удостоверение личности</h1>
-    </header>
-
-    <!-- Tabs -->
     <div class="tabs">
-        <button class="tab active" onclick="openTab('document')">Документ</button>
-        <button class="tab" onclick="openTab('details')">Реквизиты</button>
+        <button class="tab active" onclick="showTab('doc')">Документ</button>
+        <button class="tab" onclick="showTab('req')">Реквизиты</button>
     </div>
 
-    <!-- Document tab -->
-    <div id="document" class="tab-content active">
-        <div class="document-card">
-            <div class="placeholder">Фото документа</div>
+    <div id="tab-doc" class="content-section active">
+        <div class="upload-area">
+            <input type="file" id="fileInput" style="display: none;" accept="image/*">
+            <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Загрузить</button>
         </div>
-
-        <button class="btn primary" onclick="showQR()">
-            📱 Предъявить документ
-        </button>
-
-        <label class="btn outline">
-            ⬆️ Отправить документ
-            <input type="file" hidden>
-        </label>
+        <div class="footer-buttons">
+            <button class="btn-primary" onclick="showQR()">Предъявить документ</button>
+            <button class="btn-outline">Отправить документ</button>
+        </div>
     </div>
 
-    <!-- Details tab -->
-    <div id="details" class="tab-content">
-        <div class="field">
+    <div id="tab-req" class="content-section">
+        
+        <div class="input-group">
             <label>ФИО</label>
-            <input type="text" placeholder="Введите ФИО">
+            <div class="input-row">
+                <input type="text" placeholder="Введите ФИО">
+                <button class="copy-btn" onclick="copyValue(this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
         </div>
 
-        <div class="field">
+        <div class="input-group">
             <label>ИИН</label>
-            <input type="text" placeholder="Введите ИИН">
+            <div class="input-row">
+                <input type="text" placeholder="12-значный номер" maxlength="12">
+                <button class="copy-btn" onclick="copyValue(this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
         </div>
 
-        <div class="field">
+        <div class="input-group">
             <label>Дата рождения</label>
-            <input type="date">
+            <div class="input-row">
+                <input type="text" placeholder="ДД.ММ.ГГГГ">
+                <button class="copy-btn" onclick="copyValue(this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+
+
+</button>
+            </div>
         </div>
 
-        <div class="field">
+        <div class="input-group">
             <label>Номер документа</label>
-            <input type="text">
+            <div class="input-row">
+                <input type="text" placeholder="000000000">
+                <button class="copy-btn" onclick="copyValue(this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
         </div>
 
-        <div class="field">
+        <div class="input-group">
             <label>Дата выдачи</label>
-            <input type="date">
+            <div class="input-row">
+                <input type="text" placeholder="ДД.ММ.ГГГГ">
+                <button class="copy-btn" onclick="copyValue(this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
         </div>
 
-        <div class="field">
+        <div class="input-group">
             <label>Срок действия</label>
-            <input type="date">
+            <div class="input-row">
+                <input type="text" placeholder="ДД.ММ.ГГГГ">
+                <button class="copy-btn" onclick="copyValue(this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+            </div>
         </div>
 
-        <button class="btn outline">
-            ⬆️ Отправить реквизиты
-        </button>
-    </div>
-
-</div>
-
-<!-- QR Modal -->
-<div id="qrModal" class="modal">
-    <div class="modal-content">
-        <canvas id="qrCanvas"></canvas>
-        <p id="randomCode"></p>
-        <button class="btn primary" onclick="closeQR()">Закрыть</button>
+        <div class="footer-buttons">
+            <button class="btn-outline">Отправить реквизиты</button>
+        </div>
     </div>
 </div>
 
-<script src="script.js"></script>
+<div id="qr-modal" onclick="this.style.display='none'">
+    <div class="qr-box">
+        <div class="qr-placeholder">
+            QR CODE
+        </div>
+    </div>
+    <div id="random-number" style="font-size: 32px; letter-spacing: 8px; font-weight: bold; margin-bottom: 10px;"></div>
+    <p style="opacity: 0.7;">Нажмите, чтобы закрыть</p>
+</div>
+
+<script>
+    function showTab(tabName) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        
+        if(tabName === 'doc') {
+            document.getElementById('tab-doc').classList.add('active');
+            document.querySelectorAll('.tab')[0].classList.add('active');
+        } else {
+            document.getElementById('tab-req').classList.add('active');
+            document.querySelectorAll('.tab')[1].classList.add('active');
+        }
+    }
+
+    function showQR() {
+        const modal = document.getElementById('qr-modal');
+        const numDisplay = document.getElementById('random-number');
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        numDisplay.innerText = randomNum;
+        modal.style.display = 'flex';
+    }
+
+    // Функция для имитации копирования
+    function copyValue(btn) {
+        const input = btn.parentElement.querySelector('input');
+        if(input.value) {
+            alert("Скопировано: " + input.value);
+            // В реальном браузере это: navigator.clipboard.writeText(input.value);
+        } else {
+            alert("Поле пустое!");
+        }
+    }
+</script>
+
 </body>
 </html>
