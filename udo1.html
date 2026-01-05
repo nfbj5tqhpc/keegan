@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID</title>
+    <title>Удостоверение личности</title>
     <style>
         :root {
             --bank-blue: #2c5bc3;
             --text-black: #000000;
             --text-gray: #a1a1a6;
             --line-color: #f2f2f7;
-            --tab-bg: #e9e9eb;
         }
 
         body {
-            /* Тонкий системный шрифт Apple */
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-            background-color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+            background-color: #fff;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -29,7 +27,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            border: 1px solid #eee;
+            background: white;
         }
 
         /* Шапка */
@@ -39,21 +37,21 @@
             position: relative;
             font-weight: 500;
             font-size: 18px;
-            color: var(--text-black);
+            color: #333;
         }
 
         .back-btn {
             position: absolute;
             left: 15px;
             color: var(--text-gray);
-            text-decoration: none;
             font-size: 24px;
+            cursor: pointer;
         }
 
-        /* Переключатель вкладок */
+        /* Табы */
         .tabs {
             display: flex;
-            background: var(--tab-bg);
+            background: #f2f2f4;
             margin: 10px 15px;
             border-radius: 10px;
             padding: 2px;
@@ -61,65 +59,41 @@
 
         .tab {
             flex: 1;
-            padding: 8px;
+            padding: 10px;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 9px;
             font-size: 14px;
             font-weight: 500;
             background: transparent;
-            color: var(--text-black); /* Черный текст вкладок */
-            transition: 0.3s;
+            color: var(--text-black);
+            cursor: pointer;
         }
 
         .tab.active {
             background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
 
-        /* Контент */
+        /* Секция реквизитов */
         .content-section {
-            display: none;
-            flex: 1;
-            padding: 0 20px;
+            display: flex;
             flex-direction: column;
-        }
-
-        .content-section.active {
-            display: flex;
-        }
-
-        /* Стили вкладки Документ */
-        .upload-area {
+            padding: 0 20px;
             flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        .btn-upload {
-            background: var(--bank-blue);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 10px;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* Стили вкладки Реквизиты (Поля ввода) */
         .input-group {
-            margin-top: 15px;
+            margin-top: 20px;
             border-bottom: 1px solid var(--line-color);
-            padding-bottom: 8px;
+            padding-bottom: 10px;
         }
 
         .input-group label {
             color: var(--text-gray);
             font-size: 13px;
-            font-weight: 300; /* Тонкий шрифт для меток */
+            font-weight: 300;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .input-row {
@@ -129,92 +103,48 @@
         }
 
         .input-row input {
-            width: 85%;
             border: none;
-            padding: 4px 0;
-            font-size: 17px;
             outline: none;
+            font-size: 18px;
             font-weight: 400;
-            color: #333;
+            width: 100%;
+            color: #000;
             background: transparent;
         }
 
-        /* Иконка копирования (Черная и развернутая) */
-        .copy-btn {
-            background: none;
-            border: none;
+        .copy-icon-svg {
+            width: 22px;
+            height: 22px;
+            stroke: #8e8e93;
             cursor: pointer;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            color: black;
         }
 
-        /* Нижние кнопки */
-        .footer-buttons {
+        /* Кнопка внизу */
+        .footer {
             padding: 20px;
-            margin-top: auto; /* Прижимает кнопки к низу */
-            margin-bottom: 10px;
+            margin-top: auto;
+            margin-bottom: 30px;
+        }
+
+        .btn-send {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             gap: 10px;
-        }
-
-        .btn-primary {
-            background: var(--bank-blue);
-            color: white;
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 500;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-outline {
             background: transparent;
+            border: 1.5px solid var(--bank-blue);
             color: var(--bank-blue);
-            width: 100%;
             padding: 14px;
             border-radius: 12px;
-            border: 1.5px solid var(--bank-blue);
+            font-size: 16px;
             font-weight: 500;
-            font-size: 15px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .share-icon-svg {
             width: 20px;
             height: 20px;
-        }
-
-        /* Модальное окно */
-        #qr-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: white;
-            z-index: 100;
-        }
-        
-        .qr-box {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 25px;
         }
     </style>
 </head>
@@ -227,144 +157,74 @@
     </div>
 
     <div class="tabs">
-        <button class="tab active" onclick="showTab('doc')">Документ</button>
-        <button class="tab" onclick="showTab('req')">Реквизиты</button>
+        <button class="tab">Документ</button>
+        <button class="tab active">Реквизиты</button>
     </div>
 
-    <div id="tab-doc" class="content-section active">
-        <div class="upload-area">
-            <input type="file" id="fileInput" style="display: none;" accept="image/*">
-            <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Загрузить</button>
-        </div>
-        <div class="footer-buttons">
-            <button class="btn-primary" onclick="showQR()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h2v2H7zm0 8h2v2H7zm8-8h2v2h-2zm-4 4h2v2h-2zm4 4h2v2h-2zm-4-8h2v2h-2zm0 8h2v2h-2z"/></svg>
-                Предъявить документ
-            </button>
-            <button class="btn-outline">
-                <svg class="share-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M12 2v12m-4-8l4-4 4 4"/></svg>
-                Отправить документ
-            </button>
-        </div>
-    </div>
-
-    <div id="tab-req" class="content-section">
-        
+    <div class="content-section">
         <div class="input-group">
             <label>ФИО</label>
             <div class="input-row">
-                <input type="text" placeholder="">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2">
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        <rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect>
-                    </svg>
-                </button>
+                <input type="text" value="">
+                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    <rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect>
+                </svg>
             </div>
         </div>
 
         <div class="input-group">
             <label>ИИН</label>
             <div class="input-row">
-                <input type="text" placeholder="" maxlength="12">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg>
-                </button>
+                <input type="text" value="">
+                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
             </div>
         </div>
 
         <div class="input-group">
             <label>Дата рождения</label>
             <div class="input-row">
-                <input type="text" placeholder="">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg>
-                </button>
+                <input type="text" placeholder="ДД.ММ.ГГГГ">
+                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
             </div>
         </div>
 
         <div class="input-group">
             <label>Номер документа</label>
             <div class="input-row">
-                <input type="text" placeholder="">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg>
-                </button>
+                <input type="text" value="">
+                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
             </div>
         </div>
 
         <div class="input-group">
             <label>Дата выдачи</label>
             <div class="input-row">
-                <input type="text" placeholder="">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg>
-                </button>
+                <input type="text" placeholder="ДД.ММ.ГГГГ">
+                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
             </div>
         </div>
 
         <div class="input-group">
             <label>Срок действия</label>
             <div class="input-row">
-                <input type="text" placeholder="">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg>
-                </button>
+                <input type="text" placeholder="ДД.ММ.ГГГГ">
+                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
             </div>
         </div>
+    </div>
 
-        <div class="footer-buttons">
-            <button class="btn-outline">
-                <svg class="share-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
-                    <path d="M12 2v12"></path>
-                    <path d="m8 6 4-4 4 4"></path>
-                </svg>
-                Отправить реквизиты
-            </button>
-        </div>
+    <div class="footer">
+        <button class="btn-send">
+            <svg class="share-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+                <path d="M12 2v12"></path>
+                <polyline points="8 6 12 2 16 6"></polyline>
+            </svg>
+            Отправить реквизиты
+        </button>
     </div>
 </div>
-
-<div id="qr-modal" onclick="this.style.display='none'">
-    <div class="qr-box">
-        <div id="qr-content" style="width:200px; height:200px; background:#eee; display:flex; align-items:center; justify-content:center; color:black;">QR CODE</div>
-    </div>
-    <div id="random-number" style="font-size: 32px; letter-spacing: 8px; font-weight: bold; margin-bottom: 10px;"></div>
-    <p style="opacity: 0.7;">Нажмите, чтобы закрыть</p>
-</div>
-
-<script>
-    function showTab(tabName) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        
-        if(tabName === 'doc') {
-            document.getElementById('tab-doc').classList.add('active');
-            document.querySelectorAll('.tab')[0].classList.add('active');
-        } else {
-            document.getElementById('tab-req').classList.add('active');
-            document.querySelectorAll('.tab')[1].classList.add('active');
-        }
-    }
-
-    function showQR() {
-        const modal = document.getElementById('qr-modal');
-        const numDisplay = document.getElementById('random-number');
-        const randomNum = Math.floor(100000 + Math.random() * 900000);
-        numDisplay.innerText = randomNum;
-        modal.style.display = 'flex';
-    }
-
-    function copyValue(btn) {
-        const input = btn.parentElement.querySelector('input');
-        if(input.value) {
-            navigator.clipboard.writeText(input.value).then(() => {
-                alert("Скопировано: " + input.value);
-            });
-        }
-    }
-</script>
 
 </body>
 </html>
