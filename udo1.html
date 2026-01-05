@@ -2,359 +2,394 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Удостоверение личности - Банк</title>
-    <style>
-        :root {
-            --bank-blue: #2c5bc3;
-            --bg-gray: #f8f9fa;
-            --text-gray: #8e8e93;
-            --border-color: #e5e5ea;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Kaspi.kz</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json">
+  <style>
+    #preview {
+      margin: -50px 0 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 60vh;
+      overflow: hidden;
+      touch-action: none;
+      position: relative;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: white;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
+    .zoomable-image {
+      max-width: none;
+      max-height: none;
+      border-radius: 12px;
+      touch-action: none;
+      user-select: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
+    }
 
-        .mobile-container {
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #eee;
-        }
-
-        /* Шапка */
-        .header {
-            padding: 20px;
-            text-align: center;
-            position: relative;
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .back-btn {
-            position: absolute;
-            left: 20px;
-            color: var(--text-gray);
-            text-decoration: none;
-            font-size: 24px;
-        }
-
-        /* Переключатель вкладок */
-        .tabs {
-            display: flex;
-            background: #e9e9eb;
-            margin: 0 20px;
-            border-radius: 10px;
-            padding: 2px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            background: transparent;
-            transition: 0.3s;
-        }
-
-        .tab.active {
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        /* Контент */
-        .content-section {
-            display: none;
-            flex: 1;
-            padding: 20px;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .content-section.active {
-            display: flex;
-        }
-
-        /* Стили вкладки Документ */
-        .upload-area {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .btn-upload {
-            background: var(--bank-blue);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 10px;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* Стили вкладки Реквизиты */
-        .input-group {
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .input-group label {
-            color: var(--text-gray);
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
-
-        .input-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .input-row input {
-            width: 85%;
-            border: none;
-            padding: 8px 0;
-            font-size: 17px;
-            outline: none;
-            font-weight: 400;
-            color: #333;
-        }
-
-        /* Иконка копирования (SVG) */
-        .copy-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            opacity: 0.5;
-        }
-
-        .copy-btn:active {
-            opacity: 1;
-            transform: scale(0.9);
-        }
-
-        /* Кнопки внизу */
-        .footer-buttons {
-            padding: 20px;
-            gap: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .btn-primary {
-            background: var(--bank-blue);
-            color: white;
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--bank-blue);
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--bank-blue);
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        /* Модальное окно QR-кода */
-        #qr-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: white;
-            z-index: 100;
-            text-align: center;
-        }
-        
-        .qr-box {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-        }
-
-        .qr-placeholder {
-            width: 220px;
-            height: 220px;
-            border: 2px solid #333;
-            background-image: repeating-linear-gradient(45deg, #eee 0, #eee 10px, #fff 10px, #fff 20px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #000;
-            font-weight: bold;
-            font-size: 12px;
-        }
-    </style>
+    .copy-icon {
+      height: 18px !important;
+      width: 22px !important;
+    }
+  </style>
 </head>
-<body>
+<!-- START: modal for QR -->
+<div id="qrOverlay" class="qr-overlay" aria-hidden="true">
+  <div class="qr-backdrop" id="qrBackdrop"></div>
 
-<div class="mobile-container">
-    <div class="header">
-        <a href="#" class="back-btn">‹</a>
-        Удостоверение личности
+  <div class="qr-sheet" role="dialog" aria-modal="true" aria-label="Удостоверение личности">
+    <button class="qr-close" id="qrClose" aria-label="Закрыть">&times;</button>
+
+    <div class="qr-sheet-header">
+      <h2>Удостоверение личности</h2>
     </div>
 
-    <div class="tabs">
-        <button class="tab active" onclick="showTab('doc')">Документ</button>
-        <button class="tab" onclick="showTab('req')">Реквизиты</button>
+    <div class="qr-sheet-body">
+      <p class="qr-instruction">Покажите QR-код сотруднику</p>
+
+      <div class="qr-image-wrap">
+        <img src="./qroo.jpg" alt="QR-код" class="qr-image">
+      </div>
+
+      <p class="qr-or">или скажите код</p>
+      <p class="qr-code">080824</p>
     </div>
-
-    <div id="tab-doc" class="content-section active">
-        <div class="upload-area">
-            <input type="file" id="fileInput" style="display: none;" accept="image/*">
-            <button class="btn-upload" onclick="document.getElementById('fileInput').click()">Загрузить</button>
-        </div>
-        <div class="footer-buttons">
-            <button class="btn-primary" onclick="showQR()">Предъявить документ</button>
-            <button class="btn-outline">Отправить документ</button>
-        </div>
-    </div>
-
-    <div id="tab-req" class="content-section">
-        
-        <div class="input-group">
-            <label>ФИО</label>
-            <div class="input-row">
-                <input type="text" placeholder="Введите ФИО">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                </button>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label>ИИН</label>
-            <div class="input-row">
-                <input type="text" placeholder="12-значный номер" maxlength="12">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                </button>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label>Дата рождения</label>
-            <div class="input-row">
-                <input type="text" placeholder="ДД.ММ.ГГГГ">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-
-
-</button>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label>Номер документа</label>
-            <div class="input-row">
-                <input type="text" placeholder="000000000">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                </button>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label>Дата выдачи</label>
-            <div class="input-row">
-                <input type="text" placeholder="ДД.ММ.ГГГГ">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                </button>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label>Срок действия</label>
-            <div class="input-row">
-                <input type="text" placeholder="ДД.ММ.ГГГГ">
-                <button class="copy-btn" onclick="copyValue(this)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                </button>
-            </div>
-        </div>
-
-        <div class="footer-buttons">
-            <button class="btn-outline">Отправить реквизиты</button>
-        </div>
-    </div>
+  </div>
 </div>
-
-<div id="qr-modal" onclick="this.style.display='none'">
-    <div class="qr-box">
-        <div class="qr-placeholder">
-            QR CODE
-        </div>
-    </div>
-    <div id="random-number" style="font-size: 32px; letter-spacing: 8px; font-weight: bold; margin-bottom: 10px;"></div>
-    <p style="opacity: 0.7;">Нажмите, чтобы закрыть</p>
-</div>
+<!-- END: modal for QR -->
 
 <script>
-    function showTab(tabName) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        
-        if(tabName === 'doc') {
-            document.getElementById('tab-doc').classList.add('active');
-            document.querySelectorAll('.tab')[0].classList.add('active');
-        } else {
-            document.getElementById('tab-req').classList.add('active');
-            document.querySelectorAll('.tab')[1].classList.add('active');
-        }
-    }
+(function(){
+  const openBtn = document.querySelector('#btnftr1');
+  const overlay = document.getElementById('qrOverlay');
+  const closeBtn = document.getElementById('qrClose');
+  const backdrop = document.getElementById('qrBackdrop');
 
-    function showQR() {
-        const modal = document.getElementById('qr-modal');
-        const numDisplay = document.getElementById('random-number');
-        const randomNum = Math.floor(100000 + Math.random() * 900000);
-        numDisplay.innerText = randomNum;
-        modal.style.display = 'flex';
-    }
+  if (!openBtn || !overlay) return;
 
-    // Функция для имитации копирования
-    function copyValue(btn) {
-        const input = btn.parentElement.querySelector('input');
-        if(input.value) {
-            alert("Скопировано: " + input.value);
-            // В реальном браузере это: navigator.clipboard.writeText(input.value);
-        } else {
-            alert("Поле пустое!");
-        }
+  function openModal() {
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    openModal();
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e){
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && overlay.classList.contains('open')) {
+      closeModal();
     }
+  });
+})();
 </script>
 
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">
+        <img src="arrow.png" alt="" class="back-icon" />
+        <h1 class="text-title">Удостоверение личности</h1>
+      </div>
+
+      <div class="tab">
+        <div class="btntab">
+          <input type="radio" id="tab-btn-1" name="tab-btn" checked />
+          <label for="tab-btn-1">Документ</label>
+
+          <input type="radio" id="tab-btn-2" name="tab-btn" />
+          <label for="tab-btn-2">Реквизиты</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="doc" class="tab-content active">
+      <div class="middle">
+        <div class="img-upload">
+          <div id="upload-container">
+            <input type="file" id="idupload" accept="image/*" style="display: none;" />
+            <label for="idupload" id="upload-label"
+              style="padding: 12px 24px; background: #2b6bcc; color: white; border-radius: 10px; font-size: 16px; cursor: pointer; display: inline-block; margin-bottom: 20px;"
+            >Загрузить</label>
+            <div id="preview" style="display: flex; justify-content: center;"></div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="btnfooter" id="docbtn">
+            <button id="btnftr1">
+              <img src="qr.png" alt="" class="qrbtn" />
+              Предъявить документ
+            </button>
+            <button id="btnftr2" class="share" style="margin-bottom: 20px;">
+              <img src="upload.png" alt="" class="uploadbtn" />
+              Отправить документ
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="req" class="tab-content">
+      <ul class="rekvizit">
+        <li>
+          <span class="atritem">ФИО</span>
+          <input type="text" maxlength="32" spellcheck="false" class="rekitem" id="1" style="margin-right: 25px;"/>
+          <img src="copy.png" alt="" class="copy-icon" />
+        </li>
+        <li>
+          <span class="atritem">ИИН</span>
+          <input type="text" maxlength="12" spellcheck="false" class="rekitem" id="2" style="margin-right: 25px;"/>
+          <img src="copy.png" alt="" class="copy-icon"  />
+        </li>
+        <li>
+          <span class="atritem">Дата рождения</span>
+          <input type="text" maxlength="10" spellcheck="false" class="rekitem" id="3" style="margin-right: 25px;"/>
+          <img src="copy.png" alt="" class="copy-icon" />
+        </li>
+        <li>
+          <span class="atritem">Номер документа</span>
+          <input type="text" maxlength="9" spellcheck="false" class="rekitem" id="4" style="margin-right: 25px;">
+          <img src="copy.png" alt="" class="copy-icon" />
+        </li>
+        <li>
+          <span class="atritem">Дата выдачи</span>
+          <input type="text" maxlength="10" spellcheck="false" class="rekitem" id="5" style="margin-right: 25px;">
+          <img src="copy.png" alt="" class="copy-icon" />
+        </li>
+        <li>
+          <span class="atritem">Срок действия</span>
+          <input type="text" maxlength="10" spellcheck="false" class="rekitem" id="6" style="margin-right: 25px;">
+          <img src="copy.png" alt="" class="copy-icon" />
+        </li>
+      </ul>
+
+        <div class="footer">
+          <div class="btnfooter" id="docbtn" style="margin-bottom: 150px; margin-top: -150px;">
+            <button id="btnftr2" class="share" style="margin-left: auto;">
+              <img src="upload.png" alt="" class="uploadbtn" />
+              Отправить реквизиты
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.getElementById("idupload");
+      const preview = document.getElementById("preview");
+      const label = document.getElementById("upload-label");
+      const tabBtn1 = document.getElementById("tab-btn-1");
+      const tabBtn2 = document.getElementById("tab-btn-2");
+      const doc = document.getElementById("doc");
+      const req = document.getElementById("req");
+
+      function showImage(src) {
+        const img = document.createElement("img");
+        img.src = src;
+        preview.innerHTML = "";
+        preview.appendChild(img);
+        label.style.display = "none";
+      }
+
+      function updateTabs() {
+        if (tabBtn1.checked) {
+          doc.classList.add("active");
+          req.classList.remove("active");
+
+          const saved = localStorage.getItem("uploadedImage");
+          if (saved) {
+            showImage(saved);
+          } else {
+            label.style.display = "inline-block";
+            preview.innerHTML = "";
+          }
+        } else {
+          req.classList.add("active");
+          doc.classList.remove("active");
+          label.style.display = "none";
+          preview.innerHTML = "";
+        }
+      }
+
+      tabBtn1.addEventListener("change", updateTabs);
+      tabBtn2.addEventListener("change", updateTabs);
+
+      // запуск по умолчанию
+      tabBtn1.checked = true;
+      updateTabs();
+
+      input.addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const src = e.target.result;
+          localStorage.setItem("uploadedImage", src);
+          showImage(src);
+        };
+        reader.readAsDataURL(file);
+      });
+            // сохранить реквизиты в localStorage
+      const rekvizitInputs = document.querySelectorAll('.rekvizit input');
+      rekvizitInputs.forEach((input, index) => {
+        const saved = localStorage.getItem('rekvizit' + index);
+        if (saved) input.value = saved;
+
+        input.addEventListener('input', () => {
+          localStorage.setItem('rekvizit' + index, input.value);
+        });
+      });
+
+    });
+    let startDistance = 0;
+let currentScale = 1;
+let startX = 0;
+let startY = 0;
+let currentX = 0;
+let currentY = 0;
+let isPanning = false;
+let lastScaleChange = 1;
+
+preview.addEventListener("touchstart", function(e) {
+  const img = preview.querySelector("img");
+  if (!img) return;
+
+  if (e.touches.length === 2) {
+    // Пинч-зум
+    startDistance = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    lastScaleChange = 1;
+    isPanning = false;
+  } else if (e.touches.length === 1 && currentScale > 1) {
+    // Панорамирование
+    isPanning = true;
+    startX = e.touches[0].clientX - currentX;
+    startY = e.touches[0].clientY - currentY;
+  }
+}, { passive: false });
+
+preview.addEventListener("touchmove", function(e) {
+  const img = preview.querySelector("img");
+  if (!img) return;
+  e.preventDefault();
+
+  if (e.touches.length === 2) {
+    // Пинч
+    const newDistance = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    const scaleChange = newDistance / startDistance;
+    let newScale = currentScale * scaleChange;
+
+    // Не даем уменьшиться меньше 1
+    if (newScale < 1) newScale = 1;
+
+    img.style.transform = `translate(${currentX}px, ${currentY}px) scale(${newScale})`;
+    lastScaleChange = scaleChange;
+  } else if (e.touches.length === 1 && isPanning) {
+    // Перемещение
+    currentX = e.touches[0].clientX - startX;
+    currentY = e.touches[0].clientY - startY;
+    img.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale})`;
+  }
+}, { passive: false });
+
+preview.addEventListener("touchend", function(e) {
+  const img = preview.querySelector("img");
+  if (!img) return;
+
+  if (e.touches.length < 2) {
+    // Фиксируем масштаб после пинча
+    const style = window.getComputedStyle(img);
+    const matrix = new WebKitCSSMatrix(style.transform);
+    currentScale = Math.max(matrix.a, 1); // минимум 1
+  }
+});
+
+// QR modal open/close
+(function(){
+  const openBtn = document.querySelector('#btnftr1');
+  const overlay = document.getElementById('qrOverlay');
+  const closeBtn = document.getElementById('qrClose');
+  const backdrop = document.getElementById('qrBackdrop');
+
+  if (!openBtn || !overlay) return;
+
+  function openModal() {
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    // блокируем прокрутку страницы когда открыт модал
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  openBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    openModal();
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+
+  // клик по области вне .qr-sheet также закрывает: делаем делегирование
+  overlay.addEventListener('click', function(e){
+    if (e.target === overlay) closeModal();
+  });
+
+  // Esc закрывает
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && overlay.classList.contains('open')) {
+      closeModal();
+    }
+  });
+})();
+
+document.getElementById("btnftr2").addEventListener("click", async () => {
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "Мой сайт",
+        text: "Посмотри это!",
+        url: window.location.href
+      });
+      console.log("Успешно поделились");
+    } catch (err) {
+      console.log("Ошибка или отмена", err);
+    }
+  } else {
+    alert("Ваш браузер не поддерживает системное меню поделиться");
+  }
+});
+
+
+  </script>
 </body>
 </html>
