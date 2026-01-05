@@ -7,37 +7,32 @@
     <style>
         :root {
             --bank-blue: #2c5bc3;
-            --text-black: #000000;
             --text-gray: #a1a1a6;
-            --line-color: #f2f2f7;
+            --bg-light: #f2f2f7;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-            background-color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             margin: 0;
-            display: flex;
-            justify-content: center;
+            background-color: #fff;
             -webkit-font-smoothing: antialiased;
         }
 
         .mobile-container {
-            width: 100%;
             max-width: 400px;
+            margin: 0 auto;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: white;
         }
 
         /* Шапка */
         .header {
             padding: 15px;
             text-align: center;
-            position: relative;
             font-weight: 500;
             font-size: 18px;
-            color: #333;
+            position: relative;
         }
 
         .back-btn {
@@ -45,13 +40,13 @@
             left: 15px;
             color: var(--text-gray);
             font-size: 24px;
-            cursor: pointer;
+            text-decoration: none;
         }
 
-        /* Табы */
+        /* Переключатель */
         .tabs {
             display: flex;
-            background: #f2f2f4;
+            background: #e9e9eb;
             margin: 10px 15px;
             border-radius: 10px;
             padding: 2px;
@@ -59,41 +54,44 @@
 
         .tab {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 9px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
             background: transparent;
-            color: var(--text-black);
             cursor: pointer;
         }
 
         .tab.active {
             background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Секция реквизитов */
         .content-section {
-            display: flex;
+            display: none;
+            flex: 1;
             flex-direction: column;
             padding: 0 20px;
-            flex: 1;
         }
 
+        .content-section.active {
+            display: flex;
+        }
+
+        /* Поля Реквизитов */
         .input-group {
-            margin-top: 20px;
-            border-bottom: 1px solid var(--line-color);
-            padding-bottom: 10px;
+            margin-top: 15px;
+            border-bottom: 1px solid #f0f0f2;
+            padding-bottom: 8px;
         }
 
         .input-group label {
             color: var(--text-gray);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 300;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .input-row {
@@ -106,45 +104,76 @@
             border: none;
             outline: none;
             font-size: 18px;
-            font-weight: 400;
             width: 100%;
-            color: #000;
-            background: transparent;
+            padding: 4px 0;
         }
 
-        .copy-icon-svg {
+        /* Иконка Копировать (Точная копия с фото) */
+        .copy-icon {
             width: 22px;
             height: 22px;
-            stroke: #8e8e93;
             cursor: pointer;
+            margin-left: 10px;
         }
 
-        /* Кнопка внизу */
-        .footer {
-            padding: 20px;
-            margin-top: auto;
-            margin-bottom: 30px;
+        /* Стили кнопок Документа */
+        .upload-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .btn-send {
+        .btn-blue {
+            background: var(--bank-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn-outline {
             background: transparent;
             border: 1.5px solid var(--bank-blue);
             color: var(--bank-blue);
-            padding: 14px;
             border-radius: 12px;
+            padding: 14px;
             font-size: 16px;
             font-weight: 500;
+            width: 100%;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .share-icon-svg {
-            width: 20px;
-            height: 20px;
+        .footer {
+            padding: 20px;
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+
+        /* QR Модалка */
+        #qr-modal {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.9);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
         }
     </style>
 </head>
@@ -157,18 +186,34 @@
     </div>
 
     <div class="tabs">
-        <button class="tab">Документ</button>
-        <button class="tab active">Реквизиты</button>
+        <button class="tab active" onclick="showTab('doc')">Документ</button>
+        <button class="tab" onclick="showTab('req')">Реквизиты</button>
     </div>
 
-    <div class="content-section">
+    <div id="tab-doc" class="content-section active">
+        <div class="upload-center">
+            <button class="btn-blue" style="width: auto; padding: 12px 30px;">Загрузить</button>
+        </div>
+        <div class="footer">
+            <button class="btn-blue" onclick="openQR()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><path d="M14 14h7v7h-7z"></path></svg>
+                Предъявить документ
+            </button>
+            <button class="btn-outline">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M12 2v12m-4-8l4-4 4 4"></path></svg>
+                Отправить документ
+            </button>
+        </div>
+    </div>
+
+    <div id="tab-req" class="content-section">
         <div class="input-group">
             <label>ФИО</label>
             <div class="input-row">
-                <input type="text" value="">
-                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    <rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect>
+                <input type="text">
+                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
+                    <rect x="4" y="8" width="11" height="11" rx="2" ry="2"></rect>
+                    <path d="M9 4h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2"></path>
                 </svg>
             </div>
         </div>
@@ -176,55 +221,70 @@
         <div class="input-group">
             <label>ИИН</label>
             <div class="input-row">
-                <input type="text" value="">
-                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
+                <input type="text">
+                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
+                    <rect x="4" y="8" width="11" height="11" rx="2" ry="2"></rect>
+                    <path d="M9 4h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2"></path>
+                </svg>
             </div>
         </div>
 
         <div class="input-group">
             <label>Дата рождения</label>
             <div class="input-row">
-                <input type="text" placeholder="ДД.ММ.ГГГГ">
-                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
+                <input type="text" placeholder="">
+                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
+                    <rect x="4" y="8" width="11" height="11" rx="2" ry="2"></rect>
+                    <path d="M9 4h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2"></path>
+                </svg>
             </div>
         </div>
 
         <div class="input-group">
             <label>Номер документа</label>
             <div class="input-row">
-                <input type="text" value="">
-                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
+                <input type="text">
+                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.5">
+                    <rect x="4" y="8" width="11" height="11" rx="2" ry="2"></rect>
+                    <path d="M9 4h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2"></path>
+                </svg>
             </div>
         </div>
 
-        <div class="input-group">
-            <label>Дата выдачи</label>
-            <div class="input-row">
-                <input type="text" placeholder="ДД.ММ.ГГГГ">
-                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
-            </div>
+        <div class="footer">
+            <button class="btn-outline">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M12 2v12m-4-8l4-4 4 4"></path></svg>
+                Отправить реквизиты
+            </button>
         </div>
-
-        <div class="input-group">
-            <label>Срок действия</label>
-            <div class="input-row">
-                <input type="text" placeholder="ДД.ММ.ГГГГ">
-                <svg class="copy-icon-svg" viewBox="0 0 24 24" fill="none" stroke="1.5"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="13" height="13" rx="2" ry="2"></rect></svg>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer">
-        <button class="btn-send">
-            <svg class="share-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
-                <path d="M12 2v12"></path>
-                <polyline points="8 6 12 2 16 6"></polyline>
-            </svg>
-            Отправить реквизиты
-        </button>
     </div>
 </div>
+
+<div id="qr-modal" onclick="this.style.display='none'">
+    <div style="background:white; padding:20px; border-radius:15px; margin-bottom:20px;">
+        <div style="width:180px; height:180px; border:2px dashed #000;"></div>
+    </div>
+    <div id="rand-num" style="font-size:32px; letter-spacing:5px; font-weight:bold;"></div>
+</div>
+
+<script>
+    function showTab(type) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        if(type === 'doc') {
+            document.querySelectorAll('.tab')[0].classList.add('active');
+            document.getElementById('tab-doc').classList.add('active');
+        } else {
+            document.querySelectorAll('.tab')[1].classList.add('active');
+            document.getElementById('tab-req').classList.add('active');
+        }
+    }
+
+    function openQR() {
+        document.getElementById('qr-modal').style.display = 'flex';
+        document.getElementById('rand-num').innerText = Math.floor(100000 + Math.random() * 900000);
+    }
+</script>
 
 </body>
 </html>
