@@ -6,66 +6,69 @@
     <title>Удостоверение личности</title>
     <style>
         :root {
-            --bank-blue: #2c5bc3;
+            --bank-blue-text: #5a88d8; 
+            --bank-blue-border: #2c5bc3; 
             --text-black: #000000;
-            --text-gray: #a1a1a6;
-            --line-color: #f2f2f7;
+            --text-gray: #8e8e93;
+            --bg-tab: #f2f2f4;
         }
 
         body {
-            /* Используем максимально тонкие системные шрифты */
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #fff;
             margin: 0;
             display: flex;
             justify-content: center;
-            -webkit-font-smoothing: antialiased;
         }
 
         .mobile-container {
             width: 100%;
             max-width: 400px;
-            height: 100vh;
+            height: 100vh; /* Занимает всю высоту экрана */
             display: flex;
             flex-direction: column;
             background: white;
         }
 
+        /* Шапка */
         .header {
             padding: 15px;
             text-align: center;
             position: relative;
-            font-weight: 500;
-            font-size: 18px;
+            font-weight: 700;
+            font-size: 19px;
             color: var(--text-black);
         }
 
         .back-btn {
             position: absolute;
             left: 15px;
+            top: 18px;
             color: var(--text-gray);
             text-decoration: none;
             font-size: 24px;
         }
 
+        /* Вкладки */
         .tabs {
             display: flex;
-            background: #f2f2f4;
+            background: var(--bg-tab);
             margin: 10px 15px;
-            border-radius: 10px;
-            padding: 2px;
+            border-radius: 12px;
+            padding: 3px;
         }
 
         .tab {
             flex: 1;
-            padding: 8px;
+            padding: 10px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
             background: transparent;
             color: var(--text-black);
+            transition: 0.2s;
         }
 
         .tab.active {
@@ -73,24 +76,27 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        /* Поля ввода */
+        /* Контент реквизитов */
         .content-section {
-            display: flex;
+            display: none; /* По умолчанию скрыто */
             flex-direction: column;
-            padding: 0 20px;
-            flex: 1;
+            padding: 10px 20px;
+            flex: 1; /* Позволяет секции расти */
+        }
+
+        .content-section.active {
+            display: flex;
         }
 
         .input-group {
-            margin-top: 15px;
-            border-bottom: 1px solid var(--line-color);
+            margin-top: 18px;
+            border-bottom: 1px solid #f0f0f2;
             padding-bottom: 8px;
         }
 
         .input-group label {
             color: var(--text-gray);
             font-size: 13px;
-            font-weight: 300; /* Очень тонкий шрифт для названий */
             display: block;
             margin-bottom: 4px;
         }
@@ -105,42 +111,41 @@
             border: none;
             outline: none;
             font-size: 17px;
-            font-weight: 400;
             width: 100%;
-            padding: 4px 0;
+            padding: 2px 0;
             color: #000;
+            background: transparent;
         }
 
         .copy-icon {
             cursor: pointer;
-            opacity: 0.8;
+            padding-left: 10px;
         }
 
-        /* Кнопка внизу */
+        /* Подвал с кнопкой в самом низу */
         .footer {
             padding: 20px;
-            margin-top: auto; /* Прижимает к низу */
-            margin-bottom: 20px;
+            margin-top: auto; /* ЭТОТ ПУНКТ ТОЛКАЕТ КНОПКУ ВНИЗ */
+            margin-bottom: 10px;
         }
 
         .btn-send {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
             background: transparent;
-            border: 1.5px solid var(--bank-blue);
-            color: var(--bank-blue);
+            border: 1.5px solid var(--bank-blue-border);
+            color: var(--bank-blue-border); 
             padding: 14px;
             border-radius: 12px;
-            font-size: 15px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        /* Иконка "Поделиться" из вашего примера */
-        .share-icon-svg {
+        .share-icon {
             width: 20px;
             height: 20px;
         }
@@ -150,16 +155,20 @@
 
 <div class="mobile-container">
     <div class="header">
-        <span class="back-btn">‹</span>
+        <a href="#" class="back-btn">‹</a>
         Удостоверение личности
     </div>
 
     <div class="tabs">
-        <button class="tab">Документ</button>
-        <button class="tab active">Реквизиты</button>
+        <button class="tab" onclick="toggleTab('doc')">Документ</button>
+        <button class="tab active" onclick="toggleTab('req')">Реквизиты</button>
     </div>
 
-    <div class="content-section">
+    <div id="tab-doc" class="content-section">
+        <p style="text-align: center; color: gray; margin-top: 50px;">Здесь будет ваш документ</p>
+    </div>
+
+    <div id="tab-req" class="content-section active">
         <div class="input-group">
             <label>ФИО</label>
             <div class="input-row">
@@ -212,19 +221,37 @@
                 <div class="copy-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.2"><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect></svg></div>
             </div>
         </div>
-    </div>
 
-    <div class="footer">
-        <button class="btn-send">
-            <svg class="share-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
-                <path d="M12 2v12"></path>
-                <path d="m8 6 4-4 4 4"></path>
-            </svg>
-            Отправить реквизиты
-        </button>
+        <div class="footer">
+            <button class="btn-send">
+                <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                    <polyline points="16 6 12 2 8 6"></polyline>
+                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+                Отправить реквизиты
+            </button>
+        </div>
     </div>
 </div>
+
+<script>
+    function toggleTab(type) {
+        const tabs = document.querySelectorAll('.tab');
+        const sections = document.querySelectorAll('.content-section');
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+
+        if(type === 'doc') {
+            tabs[0].classList.add('active');
+            document.getElementById('tab-doc').classList.add('active');
+        } else {
+            tabs[1].classList.add('active');
+            document.getElementById('tab-req').classList.add('active');
+        }
+    }
+</script>
 
 </body>
 </html>
